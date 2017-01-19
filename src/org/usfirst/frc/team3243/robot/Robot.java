@@ -18,7 +18,10 @@ public class Robot extends IterativeRobot {
     final String customAuto = "My Auto";
     String autoSelected;
     SendableChooser chooser;
-	
+	InputManager IM = new InputManager();
+	MotorControl MC = new MotorControl();
+    
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -64,7 +67,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        MC.drive(IM.getDrive());
     }
     
     /**
