@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team3243.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,6 +21,7 @@ public class Robot extends IterativeRobot {
     SendableChooser chooser;
 	InputManager IM = new InputManager();
 	MotorControl MC = new MotorControl();
+	CameraServer cam = CameraServer.getInstance();
     
     
     /**
@@ -31,6 +33,7 @@ public class Robot extends IterativeRobot {
         chooser.addDefault("Default Auto", defaultAuto);
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
+        cam.startAutomaticCapture("cam1", 0);
     }
     
 	/**
