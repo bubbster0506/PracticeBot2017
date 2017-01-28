@@ -11,11 +11,17 @@ public class MotorControl {
 	
 	public void drive(Double[] val){
 		
-		drive1.set(-val[1]);
-		drive2.set(-val[1]);
-		drive3.set(val[0]);
-		drive4.set(val[0]);
-		
+		if(true) {//Robot drives FORWARDS
+			drive1.set(-val[1]);
+			drive2.set(-val[1]);
+			drive3.set(val[0]);
+			drive4.set(val[0]);
+		}else {//Robot drives BACKWARDS
+			drive1.set(-val[0]);
+			drive2.set(-val[0]);
+			drive3.set(val[1]);
+			drive4.set(val[1]);
+		}
 	}
 	
 }
