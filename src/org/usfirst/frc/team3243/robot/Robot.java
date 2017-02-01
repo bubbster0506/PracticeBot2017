@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot {
         chooser.addDefault("Default Auto", defaultAuto);
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
+        pixy.setUp();
         //cam.startAutomaticCapture("cam", 1);
     }
     
@@ -72,7 +73,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         MC.drive(IM.getDrive());
-        pixy.setUp();
+        pixy.getData();
     }
     
     /**

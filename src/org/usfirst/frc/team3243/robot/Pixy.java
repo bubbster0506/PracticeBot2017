@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Pixy {
 	I2C pixy = new I2C(I2C.Port.kOnboard, 0x54);
 	byte[] sendData = new byte[6];
+	byte[] data = new byte[14];
 	
 	public void setUp(){
 		if(pixy.addressOnly()){
@@ -23,5 +24,15 @@ public class Pixy {
 		sendData[4] = (byte) 0x00;
 		
 		pixy.writeBulk(sendData);
+	}
+	
+	public void getData(){
+		
+		
+		pixy.read(0x54, 14, data);
+		SmartDashboard.putString("Pixy Data", String.valueOf(data));
+		//if(data[0] == 0x55 && data[1] == 0xaa){
+			
+		}
 	}
 }
