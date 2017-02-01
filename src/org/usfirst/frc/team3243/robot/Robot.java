@@ -22,6 +22,7 @@ public class Robot extends IterativeRobot {
 	InputManager IM = new InputManager();
 	MotorControl MC = new MotorControl();
 	CameraServer cam = CameraServer.getInstance();
+	Pixy pixy = new Pixy();
     
     
     /**
@@ -33,7 +34,7 @@ public class Robot extends IterativeRobot {
         chooser.addDefault("Default Auto", defaultAuto);
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
-        cam.startAutomaticCapture("cam1");
+        //cam.startAutomaticCapture("cam", 1);
     }
     
 	/**
@@ -71,6 +72,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         MC.drive(IM.getDrive());
+        pixy.setUp();
     }
     
     /**
