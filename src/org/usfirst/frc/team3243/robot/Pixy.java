@@ -25,14 +25,29 @@ public class Pixy {
 		
 		pixy.writeBulk(sendData);
 	}
-	
+	public int cvt(int msb, int lsb) {
+		if(msb< 0){
+			msb += 256;
+		}
+		int value = msb*256;
+		if(lsb < 0){
+			value += 256;
+		}
+		value += lsb;
+		return value;
+	}
 	public void getData(){
 		
 		
 		pixy.read(0x54, 14, data);
-		SmartDashboard.putString("Pixy Data", String.valueOf(data));
+		pixy.readOnly(data, 14);
+		if(data[0] == 0x55){
+			SmartDashboard.putBoolean("PixyData", true);
+		}else{
+			SmartDashboard.putBoolean("PixyData", false);
+		}
 		//if(data[0] == 0x55 && data[1] == 0xaa){
 			
-		}
+		
 	}
 }
