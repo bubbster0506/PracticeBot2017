@@ -7,19 +7,88 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Pixy {
+	int start = 0xaa55;
+	int startx = 0x55aa;
+	int startc = 0xaa56;
+	String blockType;
+	boolean skipstart;
 	I2C pixy = new I2C(I2C.Port.kOnboard, 0x54);
 	byte[] sendData = new byte[6];
 	byte[] data = new byte[14];
+	byte[] block = new byte[100];
+	int sig;
+	int x;
+	int y;
+	int width;
+	int height;
+	int blockCount;
 	
-	public class Frame{
-		int sync;
-		int checksum;
-		int signature;
-		int xCenter;
-		int yCenter;
-		int width;
-		int height;
+	void getStart(){
+		int w, lastw;
+		lastw = 0xffff;
+		
+		while(true){
+			w = getWord();
+			if(w == 0 && lastw == 0){
+				blockType = "none";
+				return;
+			}else if(w == start && lastw == start){
+				blockType = "normal";
+				return;
+			}else if (w == startc && lastw == start){
+				blockType = "color";
+				return;
+			}else if(w == startx){
+				getByte();
+			}
+			lastw = w;
+		}
+		
 	}
+	
+	int getWord(){
+		byte[] buffer = new byte[2];
+		pixy.readOnly(buffer, 2);
+		return ((buffer[1] >> 8) * 0xff)| buffer[0];
+	}
+	
+	int getByte(){
+		byte[] buffer = new byte[1];
+		pixy.readOnly(buffer, 1);
+		return (buffer[0] * 0xff);
+	}
+	
+	int getBlocks(int maxBlocks){
+		block[0] = 0;
+		int blocks;
+		int i, w, check, sum;
+		if(!skipstart){
+			if(blockType == "normal" || blockType == "color"){
+				return 0;
+			}
+			
+		}else skipstart = true;
+		
+		for(blockCount = 0; blockCount < maxBlocks && blockCount < 130;){
+			check = getWord();
+			if (check == start){
+				skipstart = true;
+				blockType = "normal";
+				return blockCount;
+			}else if(check == startc){
+				skipstart = true;
+				blockType = "color";
+				return blockCount;
+			}else if(check == 0){
+				return blockCount;
+			}
+			blocks = block[0] + blockCount;
+			
+			
+		}
+	}
+	
+	
 	public void setUp(){
 		if(pixy.addressOnly()){
 			SmartDashboard.putString("Cam Working", "True");
@@ -35,45 +104,5 @@ public class Pixy {
 		pixy.writeBulk(sendData);
 	}
 	
-	public int cvt(int msb, int lsb) {
-		if(msb< 0){
-			msb += 256;
-		}
-		int value = msb*256;
-		if(lsb < 0){
-			value += 256;
-		}
-		value += lsb;
-		return value;
-	}
 	
-	public Frame getFrame(byte[] bytes){
-		Frame frame = new Frame();
-		frame.sync = cvt(bytes[1], bytes[0]);
-		frame.checksum = cvt(bytes[3], bytes[2]);
-		if(frame.checksum == 0 || frame.checksum == 0xaa55){
-			return null;
-		}
-		frame.signature = cvt(bytes[5], bytes[4]);
-		frame.xCenter = cvt(bytes[7], bytes[6]);
-		frame.yCenter = cvt(bytes[9], bytes[8]);
-		frame.width = cvt(bytes[11], bytes[10]);
-		frame.height = cvt(bytes[13], bytes[12]);
-		
-		return frame;
-	}
-	
-	
-	public void getData(){
-		pixy.read(0x54, 14, data);
-		pixy.readOnly(data, 14);
-		if(data[0] == 0x55){
-			SmartDashboard.putBoolean("PixyData", true);
-		}else{
-			SmartDashboard.putBoolean("PixyData", false);
-		}
-		//if(data[0] == 0x55 && data[1] == 0xaa){
-			
-		
-	}
 }
